@@ -25,9 +25,14 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - name: Harden Runner
+      uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+      with:
+        egress-policy: audit
 
-    - uses: actions/setup-python@v5
+    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+    - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
       with:
         python-version: "${{ env.PYTHON_VERSION }}"
 
@@ -39,7 +44,7 @@ jobs:
 
     - name: Send event to Datadog
       if: failure() && github.event_name == 'schedule'
-      uses: masci/datadog@v1
+      uses: masci/datadog@a5d283e78e33a688ed08a96ba64440505e645a8c # v1.7.1
       with:
         api-key: ${{ secrets.CORE_DATADOG_API_KEY }}
         api-url: https://api.datadoghq.eu

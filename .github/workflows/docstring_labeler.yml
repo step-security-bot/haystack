@@ -8,13 +8,25 @@ on:
 env:
   PYTHON_VERSION: "3.11"
 
+permissions:
+  contents: read
+
 jobs:
   label:
+    permissions:
+      contents: read  # for actions/checkout to fetch code
+      issues: write  # for dependabot to enable auto-label
+      repository-projects: write  # for dependabot to enable auto-label
     runs-on: ubuntu-latest
 
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
+
       - name: Checkout base commit
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           ref: ${{ github.base_ref }}
 
@@ -25,7 +37,7 @@ jobs:
         run: cp .github/utils/docstrings_checksum.py "${{ runner.temp }}/docstrings_checksum.py"
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
         with:
           python-version: "${{ env.PYTHON_VERSION }}"
 
@@ -36,7 +48,7 @@ jobs:
           echo "checksum=$CHECKSUM" >> "$GITHUB_OUTPUT"
 
       - name: Checkout HEAD commit
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           # This must be set to correctly checkout a fork
