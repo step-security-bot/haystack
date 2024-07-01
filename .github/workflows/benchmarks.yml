@@ -16,9 +16,14 @@ jobs:
     outputs:
       cml_runner_id: ${{ steps.deploy.outputs.cml_runner_id }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
 
-      - uses: iterative/setup-cml@v3
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - uses: iterative/setup-cml@1b5ab8766e715e8f1aab96bbb1f4f2e3e1e8af45 # v3
 
       - name: AWS authentication
         uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502
@@ -50,7 +55,12 @@ jobs:
     timeout-minutes: 2880
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           ref: v1.x
 
@@ -77,7 +87,7 @@ jobs:
           python datadog/send_metrics.py out/ ${{ secrets.CORE_DATADOG_API_KEY }} https://api.datadoghq.eu
 
       - name: Archive benchmark results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
         with:
           name: benchmark-results-reader
           path: test/benchmarks/out/
@@ -100,7 +110,12 @@ jobs:
     timeout-minutes: 2880
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           ref: v1.x
 
@@ -127,7 +142,7 @@ jobs:
           python datadog/send_metrics.py out/ ${{ secrets.CORE_DATADOG_API_KEY }} https://api.datadoghq.eu
 
       - name: Archive benchmark results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
         with:
           name: benchmark-results-elasticsearch
           path: test/benchmarks/out/
@@ -151,7 +166,12 @@ jobs:
     timeout-minutes: 2880
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           ref: v1.x
 
@@ -178,7 +198,7 @@ jobs:
           python datadog/send_metrics.py out/ ${{ secrets.CORE_DATADOG_API_KEY }} https://api.datadoghq.eu
 
       - name: Archive benchmark results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
         with:
           name: benchmark-results-weaviate
           path: test/benchmarks/out/
@@ -202,7 +222,12 @@ jobs:
     timeout-minutes: 2880
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           ref: v1.x
 
@@ -229,7 +254,7 @@ jobs:
           python datadog/send_metrics.py out/ ${{ secrets.CORE_DATADOG_API_KEY }} https://api.datadoghq.eu
 
       - name: Archive benchmark results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
         with:
           name: benchmark-results-opensearch
           path: test/benchmarks/out/
@@ -241,6 +266,11 @@ jobs:
       - run-opensearch-benchmarks
     runs-on: ubuntu-latest
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
+
       - name: AWS authentication
         uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502
         with:

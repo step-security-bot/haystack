@@ -14,10 +14,20 @@ on:
 env:
   PYTHON_VERSION: "3.8"
 
+permissions:
+  contents: read
+
 jobs:
   sync:
+    permissions:
+      contents: write  # for Git to git push
     runs-on: ubuntu-latest
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
+
       - name: Get branch name
         id: branch
         shell: python
@@ -29,7 +39,7 @@ jobs:
             print(f"name={branch}", file=f)
 
       - name: Checkout this repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           ref: "${{ steps.branch.outputs.name }}"
 
@@ -82,7 +92,7 @@ jobs:
           Verify documentation on Readme has been correctly updated before approving and merging this PR." \
             --label "ignore-for-release-notes"
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
         with:
           python-version: "${{ env.PYTHON_VERSION }}"
 

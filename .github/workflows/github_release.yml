@@ -8,13 +8,23 @@ on:
       # Ignore release versions tagged with -rc0 suffix
       - "!v2.[0-9]+.[0-9]-rc0"
 
+permissions:
+  contents: read
+
 jobs:
   generate-notes:
+    permissions:
+      contents: write  # for ncipollo/release-action to create a release
     runs-on: ubuntu-latest
 
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           fetch-tags: true
           fetch-depth: 0  # slow but needed by reno
@@ -59,7 +69,7 @@ jobs:
           reno report --no-show-source --ignore-cache --version v${{ steps.version.outputs.current_release }} -o relnotes.rst
 
       - name: Convert to Markdown
-        uses: docker://pandoc/core:3.1
+        uses: docker://pandoc/core:3.1@sha256:3cb2db37ef4a5d65bbb511457bd5f42faa48de0a8bebfa1d938896ea1737a4a6
         with:
           args: "--from rst --to markdown_github --no-highlight relnotes.rst -o relnotes.md --wrap=none"
 
@@ -67,7 +77,7 @@ jobs:
         run: |
           cat relnotes.md
 
-      - uses: ncipollo/release-action@v1
+      - uses: ncipollo/release-action@2c591bcc8ecdcd2db72b97d6147f871fcd833ba5 # v1.14.0
         with:
           bodyFile: "relnotes.md"
           prerelease: ${{ steps.version.outputs.current_pre_release }}
