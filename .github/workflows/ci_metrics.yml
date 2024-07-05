@@ -16,7 +16,12 @@ jobs:
   send:
     runs-on: ubuntu-latest
     steps:
-      - uses: int128/datadog-actions-metrics@v1
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
+
+      - uses: int128/datadog-actions-metrics@4460acd508a4c5aa13f859f0e9d7daa95eb04a1c # v1.89.0
         with:
           datadog-api-key: ${{ secrets.DATADOG_API_KEY }}
           datadog-site: "datadoghq.eu"

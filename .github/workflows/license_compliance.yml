@@ -20,11 +20,16 @@ jobs:
       REQUIREMENTS_FILE: requirements_direct.txt
     runs-on: ubuntu-latest
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
+
       - name: Checkout the code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
         with:
           python-version: "${{ env.PYTHON_VERSION }}"
 
@@ -35,7 +40,7 @@ jobs:
 
       - name: Check Licenses
         id: license_check_report
-        uses: pilosus/action-pip-license-checker@v2
+        uses: pilosus/action-pip-license-checker@cc7a461bfa27b44ad187b8578c881ef5138c13fd # v2.0.0
         with:
           github-token: ${{ secrets.GH_ACCESS_TOKEN }}
           requirements: ${{ env.REQUIREMENTS_FILE }}
@@ -47,7 +52,7 @@ jobs:
 
       # We keep the license inventory on FOSSA
       - name: Send license report to Fossa
-        uses: fossas/fossa-action@v1.3.3
+        uses: fossas/fossa-action@47ef11b1e1e3812e88dae436ccbd2d0cbd1adab0 # v1.3.3
         continue-on-error: true # not critical
         with:
           api-key: ${{ secrets.FOSSA_LICENSE_SCAN_TOKEN }}
@@ -73,7 +78,7 @@ jobs:
         # To prevent showing bogus failures in those PRs we skip the step.
         # The workflow will fail in any case if the actual check fails in the previous steps.
         if: (success() || failure()) && env.CORE_DATADOG_API_KEY != ''
-        uses: masci/datadog@v1
+        uses: masci/datadog@a5d283e78e33a688ed08a96ba64440505e645a8c # v1.7.1
         with:
           api-key: ${{ env.CORE_DATADOG_API_KEY }}
           api-url: https://api.datadoghq.eu
